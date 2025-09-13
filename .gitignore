@@ -1,0 +1,17 @@
+# Python virtual environments
+.venv/
+venv/
+env/
+
+# Pyenv/Poetry
+.python-version
+
+# Bytecode / caches
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Env files
+.env
+.env.*
