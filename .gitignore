@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Python virtual environments
 .venv/
 venv/
@@ -15,3 +16,14 @@ __pycache__/
 # Env files
 .env
 .env.*
+=======
+# Virtual environments
+.venv/
+env/
+venv/
+# Audio / model outputs
+*.pt
+*.wav
+
+"sound_data/outputs/\n*.wav\n*.pt\n.venv/\n"git 
+>>>>>>> main
