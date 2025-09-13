@@ -1,19 +1,78 @@
 import torchaudio
 import torch
-from dsp.audiofile import audiofile
+import matplotlib.pyplot as plt
+from pathlib import Path
+import math
+
 
 WINDOW_DURATION_MS = 23
 STEP_PERCENTAGE = 0.3
 
-# Takes in an audiofile erforms a stft and returns the tensor output
+class audiofile:
+    def __init__(self):
+        self.tensor, self.sample_rate = load_first_wav_as_tensor_and_sample_rate()
+    
+    def get_tensor(self):
+        return self.tensor
+
+    def get_sample_rate(self):
+        return self.sample_rate
+    
+    def get_file_path(self):
+        return self.file_path
+
+
+def repo_root_from_here() -> Path:
+    """
+    py/dsp/feature_adders/viny_warp.py
+    So rep root is three up.
+    """
+    return Path(__file__).resolve().parents[3]
+
+
+def load_first_wav_as_tensor_and_sample_rate():
+    """
+    Load the first .wav file from count_data/data_wav
+    Returns:
+        waveform: torch.Tensor [C, N], float32 in [-1, 1]
+        sr: int (sample rate, e.g. 48000)
+    """
+
+    folder = repo_root_from_here()/"sound_data"/"data_wav"
+    wav_files = list(folder.glob("*.wav")) + list(folder.glob("*.WAV"))
+    file_path = wav_files[0]
+    waveform, sr = torchaudio.load(str(file_path))
+    return waveform, sr
+
+
+# Takes in an audiofile performs a stft and returns the tensor output
 def eq_fourier(audiofile):
-    window_size = WINDOW_DURATION_MS * audiofile.sample_rate
+    window_size = WINDOW_DURATION_MS * audiofile.get_sample_rate()
     step_size = STEP_PERCENTAGE * window_size
     
     return torch.stft(
-        input=audiofile.tensor,
+        input=audiofile.get_tensor(),
         n_fft=window_size,
         hop_length=step_size,
         window=torch.hann_window(window_size),
         return_complex=True
     )
+
+# Measures the audiofile tensor and returns a float (0-1) representing how warm a file is (strong 150 Hz – 600 Hz, weak >2 kHz)
+def how_warm(audiofile):
+    return 0
+
+def sigmoid(input):
+    return 1 / (1 + math.e ** (-1 * input))
+
+def standard_deviation(input_tensor):
+    return torch.std(input_tensor, correction=0)
+
+def mean_of_tensor(input_tensor):
+    return torch.mean(input_tensor)
+
+x = audiofile()
+plt.imshow(x.get_tensor().abs().numpy(), aspect='auto', origin='lower')
+plt.colorbar()
+plt.show()
+print()
