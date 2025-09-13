@@ -34,24 +34,35 @@ def build_out_path(inp: Path, src_root: Path, dst_root: Path) -> Path:
     rel = inp.relative_to(src_root)
     return (dst_root / rel).with_suffix(".wav")
 
-def build_ffmpeg_cmd(ffmpeg_exe: str, inp: Path, outp: Path, sr: int, bitdepth: int, channels: int | None, soxr: bool, loudnorm: bool) -> list[str]:
+def build_ffmpeg_cmd(ffmpeg_exe: str, inp: Path, outp: Path, sr: int, bitdepth: int,
+                     channels: int | None, soxr: bool, loudnorm: bool) -> list[str]:
     acodec = CODECS[bitdepth]
+
+    # Build one audio filter chain
+    afilters = []
+    if soxr:
+        afilters.append("aresample=resampler=soxr")
+    if loudnorm:
+        afilters.append("loudnorm=I=-16:LRA=11:TP=-1.5")
+    af_arg = ",".join(afilters) if afilters else None
+
     args = [
         ffmpeg_exe,
         "-nostdin", "-hide_banner", "-loglevel", "error",
-        "-y",  # overwrite controlled at our level; ffmpeg still needs -y if we decided to overwrite
+        "-y",
         "-i", str(inp),
-        "-vn",  # ignore video; extract audio
+        "-vn",
+        "-map", "a:0",  # first audio stream
+        "-dn",          # drop data streams
+        "-f", "wav",    # force WAV container
+        "-ar", str(sr),
+        "-c:a", acodec, # explicit PCM codec
     ]
-    if soxr:
-        # high-quality resampler
-        args += ["-af", "aresample=resampler=soxr"]
-    if loudnorm:
-        # EBU R128 loudness normalization (conservative defaults)
-        args += ["-af", "loudnorm=I=-16:LRA=11:TP=-1.5"]
-    args += ["-ar", str(sr), "-acodec", acodec]
     if channels is not None:
         args += ["-ac", str(channels)]
+    if af_arg:
+        args += ["-af", af_arg]
+
     args += [str(outp)]
     return args
 

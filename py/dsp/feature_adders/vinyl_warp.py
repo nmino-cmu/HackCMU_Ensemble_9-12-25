@@ -14,7 +14,7 @@ tinyWobbleFreq = 1
 
 
 def main():
-    print(load_first_wav_as_tensor())
+    print(load_first_wav_as_tensor()[0])
 
 
 
