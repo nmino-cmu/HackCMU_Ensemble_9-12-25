@@ -45,7 +45,7 @@ def main():
     wav_path = out_dir / "warped.wav"
     pt_path  = out_dir / "warped.pt"
 
-    _save_wav_pcm24(warped, wav_path)
+    # _save_wav_pcm24(warped, wav_path)
     _save_tensor(warped, pt_path)
 
 def _save_tensor(x: torch.Tensor, path: Path):
