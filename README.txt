@@ -1,8 +1,17 @@
 ** READ ME NOW DADDY **
-Dependencies:
-Pytorch
-pip install ffmpeg-python
-Torchaudio
+### Dependencies:
+- Python 3.10–3.12 (with venv)
+pip3 install torch
+pip3 install ffmpeg-python
+pip3 install Torchaudio
+pip3 isntall numpy
+- [ffmpeg](https://ffmpeg.org/) (binary must be on PATH)
+  - macOS: `brew install ffmpeg`
+  - Linux (Debian/Ubuntu): `sudo apt install ffmpeg`
+  - Windows (PowerShell + Chocolatey): `choco install ffmpeg`
+  - Windows (manual): Download from https://www.gyan.dev/ffmpeg/builds/ and add `bin/` to PATH
+
+
 
 
 Scratch Noises in Vinyl - Kaggle
