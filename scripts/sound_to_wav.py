@@ -34,6 +34,26 @@ def build_out_path(inp: Path, src_root: Path, dst_root: Path) -> Path:
     rel = inp.relative_to(src_root)
     return (dst_root / rel).with_suffix(".wav")
 
+<<<<<<< HEAD
+def build_ffmpeg_cmd(ffmpeg_exe: str, inp: Path, outp: Path, sr: int, bitdepth: int, channels: int | None, soxr: bool, loudnorm: bool) -> list[str]:
+    acodec = CODECS[bitdepth]
+    args = [
+        ffmpeg_exe,
+        "-nostdin", "-hide_banner", "-loglevel", "error",
+        "-y",  # overwrite controlled at our level; ffmpeg still needs -y if we decided to overwrite
+        "-i", str(inp),
+        "-vn",  # ignore video; extract audio
+    ]
+    if soxr:
+        # high-quality resampler
+        args += ["-af", "aresample=resampler=soxr"]
+    if loudnorm:
+        # EBU R128 loudness normalization (conservative defaults)
+        args += ["-af", "loudnorm=I=-16:LRA=11:TP=-1.5"]
+    args += ["-ar", str(sr), "-acodec", acodec]
+    if channels is not None:
+        args += ["-ac", str(channels)]
+=======
 def build_ffmpeg_cmd(ffmpeg_exe: str, inp: Path, outp: Path, sr: int, bitdepth: int,
                      channels: int | None, soxr: bool, loudnorm: bool) -> list[str]:
     acodec = CODECS[bitdepth]
@@ -63,6 +83,7 @@ def build_ffmpeg_cmd(ffmpeg_exe: str, inp: Path, outp: Path, sr: int, bitdepth: 
     if af_arg:
         args += ["-af", af_arg]
 
+>>>>>>> 3901bb8c51194d2204744c3f219375deff0d2053
     args += [str(outp)]
     return args
 

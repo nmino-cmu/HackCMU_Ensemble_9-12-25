@@ -1,3 +1,22 @@
+<<<<<<< HEAD
+# Python virtual environments
+.venv/
+venv/
+env/
+
+# Pyenv/Poetry
+.python-version
+
+# Bytecode / caches
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Env files
+.env
+.env.*
+=======
 # Virtual environments
 .venv/
 env/
@@ -7,3 +26,4 @@ venv/
 *.wav
 
 "sound_data/outputs/\n*.wav\n*.pt\n.venv/\n"git 
+>>>>>>> main
