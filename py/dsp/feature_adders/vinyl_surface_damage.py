@@ -39,7 +39,7 @@ except Exception:
     def repo_root_from_here() -> Path:
         return Path(__file__).resolve().parents[3]
     def load_first_wav_as_tensor():
-        folder = repo_root_from_here() / "sound_data" / "outputs" / "warps"
+        folder = repo_root_from_here() / "sound_data" / "outputs" / "eqed"
         wavs = list(folder.glob("*.wav")) + list(folder.glob("*.WAV"))
         if not wavs:
             raise FileNotFoundError(f"No WAV files in {folder}")
