@@ -1,7 +1,7 @@
 ** READ ME NOW DADDY **
 Dependencies:
 Pytorch
-ffmpeg
+pip install ffmpeg-python
 Torchaudio
 
 
