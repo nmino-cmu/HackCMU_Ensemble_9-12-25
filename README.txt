@@ -3,6 +3,7 @@ Dependencies:
 Pytorch
 pip install ffmpeg-python
 Torchaudio
+numpy
 
 
 Scratch Noises in Vinyl - Kaggle
