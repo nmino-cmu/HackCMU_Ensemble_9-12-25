@@ -1,4 +1,3 @@
-** READ ME NOW DADDY **
 ### Dependencies:
 - Python 3.10–3.12 (with venv)
 pip3 install torch
