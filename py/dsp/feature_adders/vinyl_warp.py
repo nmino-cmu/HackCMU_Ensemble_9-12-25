@@ -16,7 +16,7 @@ tinyWobbleFreq  = 12.0
 
 import soundfile as sf
 
-def _save_pcm24(out_tensor: torch.Tensor, out_path: Path):
+def _save_wav_pcm24(out_tensor: torch.Tensor, out_path: Path):
     out_path.parent.mkdir(parents=True, exist_ok=True)
     x = out_tensor
     if x.is_cuda:
@@ -38,14 +38,20 @@ def _save_pcm24(out_tensor: torch.Tensor, out_path: Path):
 
 
 def main():
-    wav = load_first_wav_as_tensor()  # [C, N] @ 48k
-    warped = warper(
-        wav, largeWobbleMax, largeWobbleFreq, tinyWobbleMax, tinyWobbleFreq
-    )
+    wav = load_first_wav_as_tensor()  # [C,N] @ 48k
+    warped = warper(wav, largeWobbleMax, largeWobbleFreq, tinyWobbleMax, tinyWobbleFreq)
 
     out_dir = repo_root_from_here() / "sound_data" / "outputs"
-    _save_pcm24(wav,    out_dir / "input_copy.wav")
-    _save_pcm24(warped, out_dir / "warped.wav")
+    wav_path = out_dir / "warped.wav"
+    pt_path  = out_dir / "warped.pt"
+
+    _save_wav_pcm24(warped, wav_path)
+    _save_tensor(warped, pt_path)
+
+def _save_tensor(x: torch.Tensor, path: Path):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    # Keep sr alongside the tensor for easy reload
+    torch.save({"audio": x.detach().cpu(), "sr": SR}, str(path))
 # def main():
 #     wav = load_first_wav_as_tensor()  # [C,N] @ 48k
 #     warped = warper(
