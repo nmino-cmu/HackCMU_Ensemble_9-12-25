@@ -8,10 +8,10 @@ import torchaudio.functional as AF
 
 SR = 48000
 
-largeWobbleMax = 0.6    # ±0.6%
-tinyWobbleMax  = 0.2    # ±0.2%
-largeWobbleFreq = 0.8   # Hz
-tinyWobbleFreq  = 12.0 
+largeWobbleMax = 0    # ±0.6%
+tinyWobbleMax  = 0   # ±0.2%
+largeWobbleFreq = 0   # Hz
+tinyWobbleFreq  = 0
 # hz
 
 import soundfile as sf

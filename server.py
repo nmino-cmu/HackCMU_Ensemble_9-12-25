@@ -8,10 +8,9 @@ from pathlib import Path
 
 import torch, torchaudio
 
-# import your functions
 from eq_tilt import reduce_highs_stft
 from resonance_adder import stylus_resonance_fast
-from vinyl_dropout_intensity import block_dropout
+import vinyl_dropout_intensity as vdrop           
 from vinyl_surface_damage import add_vinyl_crackle
 from vinyl_warp import warper
 
@@ -30,20 +29,39 @@ def _save(x: torch.Tensor, sr=SR) -> bytes:
 
 def apply_chain(x: torch.Tensor, vinyl_warp_amt, surface_damage_amt, dropout_amt, eq_db, resonance_amt):
   y = x
+
+  # 1) Wow/Flutter (keep your mapping; audible at higher values)
   if vinyl_warp_amt > 0:
-    y = warper(y, vinyl_warp_amt * 0.8, 0.8, vinyl_warp_amt * 0.3, 12.0)
+    y = warper(y, vinyl_warp_amt / 50 * 0.6, vinyl_warp_amt / 50 * 0.8, vinyl_warp_amt / 50 * 0.2, vinyl_warp_amt / 50 * 12.0)
+
+  # 2) Surface crackle — 0..100 slider → rho 0..1
   if surface_damage_amt > 0:
-    y = add_vinyl_crackle(y, rho=min(1.0, surface_damage_amt/100.0))
+    rho = max(0.0, min(1.0, surface_damage_amt / 100.0))
+    y = add_vinyl_crackle(y, rho=rho)
+
+  # 3) Dropouts — set module INTENSITY directly (0..0.25), then apply once
   if dropout_amt > 0:
-    for _ in range(max(1, int(round(dropout_amt/33.0)))):
-      y = block_dropout(y, SR)
-  if abs(eq_db) > 1e-6:
-    y = reduce_highs_stft(y, SR, shelf_db=-abs(eq_db), cutoff_hz=2000.0, transition_bw=800.0, win_ms=23.0, hop_pct=0.30)
+    vdrop.INTENSITY = 0 * float(dropout_amt) / 100.0 * 0.25   # 0..25% chance per block
+    y = add_vinyl_crackle(y, 0.2)                        # use the module function
+
+  # 4) EQ tilt — UI positive = more treble cut (negative shelf dB)
+  if eq_db < 0:
+    y = reduce_highs_stft(
+      y, SR,
+      shelf_db=eq_db, cutoff_hz=2000.0, transition_bw=800.0,
+      win_ms=23.0, hop_pct=0.30
+    )
+
+  # 5) Stylus resonance — 0..1
   if resonance_amt > 0:
     y = stylus_resonance_fast(y, amount=resonance_amt)
+
+  # Safety headroom
   peak = torch.max(torch.abs(y))
-  if peak > 0.999: y = y*(0.999/float(peak))
+  if peak > 0.999:
+    y = y * (0.999 / float(peak))
   return y
+
 
 app = FastAPI()
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
@@ -78,10 +96,12 @@ async def process_audio(
   preview_ms: int = Form(15000),
 ):
   try:
+    print(f"[process] id={file_id[:8]} vw={vinyl_warp} sd={surface_damage} dr={dropout} eq={eq} rs={resonance} preview_ms={preview_ms}")
     out = _process_common(file_id, preview_ms, vinyl_warp, surface_damage, dropout, eq, resonance)
     return StreamingResponse(io.BytesIO(out), media_type="audio/wav")
   except FileNotFoundError:
     return JSONResponse({"error": "file not found"}, status_code=404)
+
 
 @app.get("/", response_class=HTMLResponse)
 def root():

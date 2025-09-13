@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Ensemble — MVP</title>
+  <title>Ensemble</title>
   <style>
     :root {
       --bg: #0b0b0b; --accent: #eaeaea; --muted: #bdbdbd;
@@ -171,6 +171,17 @@
         h('output', null, value)
       );
     }
+    
+    function SliderEQ({ label, min=-30, max=0, step=-1, value, onChange }) {
+      return h('div', { className: 'row' },
+        h('label', null, label),
+        h('input', {
+          type: 'range', min, max, step, value,
+          onChange: (e) => onChange(Number(e.target.value))
+        }),
+        h('output', null, value)
+      );
+    }
 
     function Editor({ meta, onBack }) {
   const { file, fileId, filename } = meta;
@@ -240,32 +251,26 @@
   };
 
   async function downloadProcessed() {
-    // Use last preview if available
-    if (lastBlob) {
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(lastBlob);
-      a.download = (filename.replace(/\.[^/.]+$/, "") || "track") + "_processed.wav";
-      document.body.appendChild(a); a.click(); a.remove();
-      setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-      return;
-    }
-    // Or ask backend for full render
-    const fd = new FormData();
-    fd.append("file_id", fileId);
-    fd.append("filename", filename);
-    fd.append("vinyl_warp", String(vinylWarp));
-    fd.append("surface_damage", String(surfaceDamage));
-    fd.append("dropout", String(Dropout));
-    fd.append("eq", String(EQ));
-    fd.append("resonance", String(Resonance));
-    const res = await fetch(`${API}/export`, { method: "POST", body: fd });
-    const blob = await res.blob();
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = (filename.replace(/\.[^/.]+$/, "") || "track") + "_processed.wav";
-    document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-  }
+  // Always ask backend for the FULL render (avoids preview-length downloads)
+  const fd = new FormData();
+  fd.append("file_id", fileId);
+  fd.append("filename", filename);
+  fd.append("vinyl_warp", String(vinylWarp));
+  fd.append("surface_damage", String(surfaceDamage));
+  fd.append("dropout", String(Dropout));
+  fd.append("eq", String(EQ));
+  fd.append("resonance", String(Resonance));
+
+  const res = await fetch(`${API}/export`, { method: "POST", body: fd });
+  const blob = await res.blob();
+
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = (filename.replace(/\.[^/.]+$/, "") || "track") + "_processed.wav";
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+
 
   return h('div', null,
     h('div', { className: 'toolbar' },
@@ -285,7 +290,7 @@
       ),
       h('div', { className: 'panel' },
         h('h3', null, 'EQ / Resonance'),
-        h(Slider, { label: 'EQ Attenuation', value: EQ, onChange: setEQ, max: 24 }),
+        h(SliderEQ, { label: 'EQ Attenuation', value: EQ, onChange: setEQ, max: 24 }),
         h(SliderFloat, { label: 'Stylus Resonance', value: Resonance, onChange: setResonance, max: 1, step: 0.01 }),
         h('div', { style: { marginTop: '14px' } },
           h('audio', { ref: audioRef, src: procUrl || rawUrl, controls: true })
