@@ -178,3 +178,5 @@ fourier_file = eq_fourier(file)
 fourier_file = reduce_highs_stft(fourier_file, 44100, ATTENUATION_AMOUNT)
 newfile = eq_inverse_fourier(fourier_file)
 _save_wav_pcm24(newfile, repo_root_from_here() / "sound_data" / "eq")
+
+# reduce_high_stft was written with help from AI
