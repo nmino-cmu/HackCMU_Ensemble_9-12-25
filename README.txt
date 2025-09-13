@@ -4,3 +4,4 @@ testing
 Packages Needed:
 Pytorch
 ffmpeg
+Torchaudio
