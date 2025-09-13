@@ -1,8 +1,8 @@
 ** READ ME NOW DADDY **
-
-Dependencies
-CircularText.css
-Motion
+Dependencies:
+Pytorch
+ffmpeg
+Torchaudio
 
 
 Scratch Noises in Vinyl - Kaggle
