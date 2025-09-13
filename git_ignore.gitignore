@@ -1,0 +1,7 @@
+# Virtual environments
+.venv/
+env/
+venv/
+# Audio / model outputs
+*.pt
+*.wav
