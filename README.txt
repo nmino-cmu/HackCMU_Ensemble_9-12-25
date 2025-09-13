@@ -1,6 +1,7 @@
-** READ ME NOW DADDY **
 ### Dependencies:
 - Python 3.10–3.12 (with venv)
+pip3 install pathlib
+pip3 install scipy
 pip3 install torch
 pip3 install ffmpeg-python
 pip3 install Torchaudio
