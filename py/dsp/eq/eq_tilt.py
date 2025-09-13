@@ -10,7 +10,7 @@ import soundfile as sf  # pip install soundfile
 # ---- Controls ----
 WINDOW_DURATION_MS = 23.0
 HOP_PERCENT        = 0.30
-ATTENUATION_DB     = -6.0        # NEGATIVE for a cut (e.g., -6 dB)
+ATTENUATION_DB     = -20.0        # NEGATIVE for a cut (e.g., -6 dB)
 CUTOFF_HZ          = 2000.0
 TRANSITION_BW_HZ   = 800.0
 

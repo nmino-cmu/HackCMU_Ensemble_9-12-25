@@ -89,7 +89,7 @@ def load_first_wav_as_tensor():
         waveform: torch.Tensor [C, N], float32 in [-1, 1]
         sr: int (sample rate, e.g. 48000)
     """
-    folder = repo_root_from_here() / "sound_data" / "data_wav"
+    folder = repo_root_from_here() / "sound_data" / "warps"
     wav_files = list(folder.glob("*.wav")) + list(folder.glob("*.WAV"))
     file_path = wav_files[0]
     waveform, sr = torchaudio.load(str(file_path))

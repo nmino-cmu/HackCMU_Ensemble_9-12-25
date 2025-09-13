@@ -10,14 +10,14 @@ import soundfile as sf
 # ───────────────────────────────────────────────────────────────────────────────
 # LOUD CRACKLE PRESET (WAY UP)
 # ───────────────────────────────────────────────────────────────────────────────
-RHO: float = 0.8                 # 0..1 density knob (very dense)
-LAMBDA_MIN: float = 4.0          # events/sec at RHO=0
-LAMBDA_MAX: float = 60.0         # events/sec at RHO=1 (very busy)
-POP_RATE_DIV: float = 50.0       # pops still rarer than clicks
+RHO: float = 2                # 0..1 density knob (very dense)
+LAMBDA_MIN: float = 10         # events/sec at RHO=0
+LAMBDA_MAX: float = 80        # events/sec at RHO=1 (very busy)
+POP_RATE_DIV: float = 100      # pops still rarer than clicks
 
 # ↓ Crackles softer (per-event size and density-linked attenuation)
-CLICK_SCALE_BASE: float = 0.08  # was 0.06 — per-click amplitude base reduced
-POP_SCALE_MULT: float  = 12.0    # pops larger than clicks (unchanged)
+CLICK_SCALE_BASE: float = 0.8  # was 0.06 — per-click amplitude base reduced
+POP_SCALE_MULT: float  = 20.0    # pops larger than clicks (unchanged)
 DENSITY_ATTEN_EXP: float = 0.35  # was 0.20 — denser ⇒ noticeably softer per event
 
 # ↓ Crackle bed mixed lower; pops kept where they were

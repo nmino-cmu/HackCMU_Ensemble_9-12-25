@@ -6,8 +6,8 @@ import torchaudio
 import soundfile as sf
 from pathlib import Path
 
-INTENSITY: float = .05
-BLOCK_MS : int = 70
+INTENSITY: float = .01
+BLOCK_MS : int = 0.2
 
 def block_dropout(tensor, sr):
     C, N = tensor.shape
@@ -38,12 +38,19 @@ def save_wav_pcm24(x: torch.Tensor, sr: int, out_path: Path) -> None:
     y = x.detach().cpu().float().clamp_(-1.0, 1.0)
     sf.write(str(out_path), y.transpose(0, 1).numpy(), sr, subtype="PCM_24")
 
+def _save_tensor(x: torch.Tensor, path: Path) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    torch.save(x.detach().cpu(), str(path))
+
 def main():
     input = repo_root_from_here() / "sound_data" / "outputs" / "eqed" / "eqed.wav"
-    out = repo_root_from_here() / "sound_data" / "outputs" / "dropouts" / "dropout.wav"
+    out_pt = repo_root_from_here() / "sound_data" / "outputs" / "dropouts" / "dropout.pt"
+    out_wav = repo_root_from_here() / "sound_data" / "outputs" / "dropouts" / "dropout.wav"
     tensor, sr = torchaudio.load(input)
+    _save_tensor(tensor, out_pt)
     dropped = block_dropout(tensor, sr)
-    save_wav_pcm24(dropped, sr, out)
+    save_wav_pcm24(dropped, sr, out_wav)
+    
 
 if __name__ == "__main__":
     main()
