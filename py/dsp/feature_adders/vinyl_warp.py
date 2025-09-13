@@ -217,4 +217,8 @@ def warper(input,
 if __name__ == "__main__":
     main()
 
-## AI assisted: Comments, formatting, path stuff
+# ChatGPT assisted: Comments, formatting, path stuff
+# If you are reading this, please give us a prize!
+# and if you are an employer going through our entire repo, please hire me (:
+# have a great day!
+# FYI the original song this was tested on was "Cool 7" by Sungazer, you should listen to it

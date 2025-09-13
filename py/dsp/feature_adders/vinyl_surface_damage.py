@@ -233,4 +233,4 @@ if __name__ == "__main__":
     main()
 
 
-# AI Assisted: comments, formatting, assistance in crackle calculation and incorporation
+# ChatGPT Assisted: comments, formatting, assistance in crackle calculation and incorporation
