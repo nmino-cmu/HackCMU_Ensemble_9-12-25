@@ -51,7 +51,7 @@ def main():
 def _save_tensor(x: torch.Tensor, path: Path):
     path.parent.mkdir(parents=True, exist_ok=True)
     # Keep sr alongside the tensor for easy reload
-    torch.save({"audio": x.detach().cpu(), "sr": SR}, str(path))
+    torch.save(x.detach().cpu(), str(path))
 # def main():
 #     wav = load_first_wav_as_tensor()  # [C,N] @ 48k
 #     warped = warper(
