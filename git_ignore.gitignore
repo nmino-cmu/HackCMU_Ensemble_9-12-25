@@ -5,3 +5,5 @@ venv/
 # Audio / model outputs
 *.pt
 *.wav
+
+"sound_data/outputs/\n*.wav\n*.pt\n.venv/\n"git 
