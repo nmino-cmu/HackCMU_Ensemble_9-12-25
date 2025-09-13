@@ -10,20 +10,22 @@ import soundfile as sf
 # ───────────────────────────────────────────────────────────────────────────────
 # LOUD CRACKLE PRESET (WAY UP)
 # ───────────────────────────────────────────────────────────────────────────────
-RHO: float = 0.98                 # 0..1 density knob (very dense)
-LAMBDA_MIN: float = 6.0           # events/sec at RHO=0
-LAMBDA_MAX: float = 120.0         # events/sec at RHO=1 (very busy)
-POP_RATE_DIV: float = 70.0        # pops still rarer than clicks
+RHO: float = 0.8                 # 0..1 density knob (very dense)
+LAMBDA_MIN: float = 4.0          # events/sec at RHO=0
+LAMBDA_MAX: float = 60.0         # events/sec at RHO=1 (very busy)
+POP_RATE_DIV: float = 50.0       # pops still rarer than clicks
 
-CLICK_SCALE_BASE: float = 0.12    # per-click amplitude base (much hotter)
-POP_SCALE_MULT: float  = 12.0     # pops larger than clicks
-DENSITY_ATTEN_EXP: float = 0.20   # denser ⇒ only slightly softer per event
+# ↓ Crackles softer (per-event size and density-linked attenuation)
+CLICK_SCALE_BASE: float = 0.08  # was 0.06 — per-click amplitude base reduced
+POP_SCALE_MULT: float  = 12.0    # pops larger than clicks (unchanged)
+DENSITY_ATTEN_EXP: float = 0.35  # was 0.20 — denser ⇒ noticeably softer per event
 
-CRACKLE_LEVEL_DB: float = -8.0    # mix crackle loud
-POP_LEVEL_DB: float     = -12.0   # pops just under crackle
-DEFECTS_GAIN_DB: float  = +6.0    # master gain on all defects (extra boost)
+# ↓ Crackle bed mixed lower; pops kept where they were
+CRACKLE_LEVEL_DB: float = -18.0  # was -1.0 — crackle much lower in blend
+POP_LEVEL_DB: float     = -12.0  # pops just under crackle previously; unchanged
+DEFECTS_GAIN_DB: float  = +6.0   # master gain on all defects (kept; affects both)
 
-STEREO_SKEW_STD: float = 0.06     # tiny L/R variation
+STEREO_SKEW_STD: float = 0.06    # tiny L/R variation
 WET: float = 1.0                  # fully wet (x + defects)
 
 SEED: int | None = 1234
@@ -233,4 +235,4 @@ if __name__ == "__main__":
     main()
 
 
-# ChatGPT Assisted: comments, formatting, assistance in crackle calculation and incorporation
+# ChatGPT Assisted: comments, formatting, assistance in crackle calculation
