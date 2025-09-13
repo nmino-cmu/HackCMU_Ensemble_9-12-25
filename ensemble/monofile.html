@@ -19,7 +19,7 @@
 
     /* Landing */
     .wrap { text-align: center; }
-    .stage { width: 360px; height: 360px; margin: -10px auto 28px; position: relative; display: grid; place-items: center; transform: scale(1.15); transform-origin: center top; }
+    .stage { width: 360px; height: 360px; margin: -400px auto 400px; position: relative; display: grid; place-items: center; transform: scale(2); transform-origin: center top; }
     .disk {
       width: 340px; height: 340px; border-radius: 50%;
       background: radial-gradient(circle at 50% 50%, #4a4a4a 0%, #3e3e3e 35%, #2f2f2f 70%, #262626 100%);
@@ -38,7 +38,7 @@
 
     .cta {
       appearance: none; background: #ffffff; color: #0b0b0b; border: 0; border-radius: 999px;
-      padding: 12px 18px; font-weight: 600; font-size: 15px; cursor: pointer;
+      padding: 24px 36px; font-weight: 600; font-size: 15px; cursor: pointer;
       box-shadow: 0 8px 20px rgba(255,255,255,0.08);
       transition: transform 120ms ease, box-shadow 120ms ease, opacity 120ms ease;
     }
@@ -68,7 +68,7 @@
     .toolbar { display: flex; gap: 10px; align-items: center; margin-bottom: 14px; justify-content: space-between; }
     .btn {
       appearance: none; background: #fff; color: #0b0b0b; font-weight: 600;
-      padding: 10px 14px; border-radius: 10px; border: none; cursor: pointer;
+      padding: 20px 28px; border-radius: 10px; border: none; cursor: pointer;
     }
     .btn.secondary { background: #2a2a2a; color: #eaeaea; border: 1px solid #3a3a3a; }
     .filename { font-size: 14px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 60%; }
@@ -124,7 +124,7 @@
           }
         }),
         h('button', { className: 'cta', onClick: openPicker }, 'Choose an audio file'),
-        h('div', { className: 'muted' }, 'Pick any audio to continue')
+        h('div', { className: 'muted' }, 'create a classic')
       );
     }
 
@@ -139,19 +139,30 @@
       );
     }
 
+    function SliderFloat({ label, min=0, max=100, step=0.05, value, onChange }) {
+      return h('div', { className: 'row' },
+        h('label', null, label),
+        h('input', {
+          type: 'range', min, max, step, value,
+          onChange: (e) => onChange(Number(e.target.value))
+        }),
+        h('output', null, value)
+      );
+    }
+
     function Editor({ file, onBack }) {
-      const [denoise, setDenoise] = useState(40);
-      const [clicks, setClicks] = useState(55);
-      const [hiss, setHiss] = useState(35);
-      const [wow, setWow] = useState(10);
-      const [flutter, setFlutter] = useState(8);
+      const [vinylWarp, setvinylWarp] = useState(40);
+      const [surfaceDamage, setsurfaceDamage] = useState(55);
+      const [Dropout, setDropout] = useState(35);
+      const [EQ, setEQ] = useState(10);
+      const [Resonance, setResonance] = useState(8);
 
       const [url, setUrl] = useState(() => URL.createObjectURL(file));
 
       // In a real app, send params + file to backend and update preview URL.
       const applyPreset = (p) => {
-        if (p === 'light') { setDenoise(20); setClicks(30); setHiss(25); setWow(5); setFlutter(4); }
-        if (p === 'heavy') { setDenoise(70); setClicks(80); setHiss(60); setWow(18); setFlutter(14); }
+        if (p === 'light') { setvinylWarp(20); setsurfaceDamage(30); setDropout(25); setEQ(5); setResonance(4); }
+        if (p === 'heavy') { setvinylWarp(70); setsurfaceDamage(80); setDropout(60); setEQ(18); setResonance(14); }
       };
 
       return h('div', null,
@@ -166,15 +177,15 @@
 
         h('div', { className: 'editor' },
           h('div', { className: 'panel' },
-            h('h3', null, 'Restoration'),
-            h(Slider, { label: 'Denoise', value: denoise, onChange: setDenoise }),
-            h(Slider, { label: 'Click removal', value: clicks, onChange: setClicks }),
-            h(Slider, { label: 'Hiss reduction', value: hiss, onChange: setHiss })
+            h('h3', null, 'Vinyl Creation'),
+            h(Slider, { label: 'Vinyl Warp', value: vinylWarp, onChange: setvinylWarp }),
+            h(Slider, { label: 'Surface Damage', value: surfaceDamage, onChange: setsurfaceDamage }),
+            h(Slider, { label: 'Dropout Intensity', value: Dropout, onChange: setDropout })
           ),
           h('div', { className: 'panel' },
-            h('h3', null, 'Wow & Flutter'),
-            h(Slider, { label: 'Wow depth', value: wow, onChange: setWow, max: 50 }),
-            h(Slider, { label: 'Flutter depth', value: flutter, onChange: setFlutter, max: 50 }),
+            h('h3', null, ''),
+            h(Slider, { label: 'EQ Attentuation', value: EQ, onChange: setEQ, max: 10 }),
+            h(SliderFloat, { label: 'Stylist Resonance', value: Resonance, onChange: setResonance, max: 1 }),
             h('div', { style: { marginTop: '14px' } },
               h('audio', { src: url, controls: true })
             )
@@ -194,13 +205,3 @@
   </script>
 </body>
 </html>
-
-.stage {
-        transform: scale(2);
-        width: 340px;
-        height: 340px;
-        margin: -200px auto 200px;
-        position: relative;
-        display: grid;
-        place-items: center;
-      }
