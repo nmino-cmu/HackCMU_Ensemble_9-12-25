@@ -10,7 +10,8 @@ STEP_PERCENTAGE = 0.3
 
 class audiofile:
     def __init__(self):
-        self.tensor, self.sample_rate = load_first_wav_as_tensor_and_sample_rate()
+        self.sample_rate = 24
+        self.tensor = load_first_wav_as_tensor_and_sample_rate()
     
     def get_tensor(self):
         return self.tensor
@@ -30,19 +31,15 @@ def repo_root_from_here() -> Path:
     return Path(__file__).resolve().parents[3]
 
 
-def load_first_wav_as_tensor_and_sample_rate():
-    """
-    Load the first .wav file from count_data/data_wav
-    Returns:
-        waveform: torch.Tensor [C, N], float32 in [-1, 1]
-        sr: int (sample rate, e.g. 48000)
-    """
+def load_tensor_from_outputs() -> torch.Tensor:
+    folder = repo_root_from_here() / "outputs"
+    pt_files = list(folder.glob("*.pt"))
+    
+    tensor = torch.load(str(pt_files[0]), map_location="cpu")
+    if isinstance(tensor, torch.Tensor):
+        return tensor
+    raise TypeError(f"Loaded object is {type(tensor)}; not a tensor.")
 
-    folder = repo_root_from_here()/"sound_data"/"data_wav"
-    wav_files = list(folder.glob("*.wav")) + list(folder.glob("*.WAV"))
-    file_path = wav_files[0]
-    waveform, sr = torchaudio.load(str(file_path))
-    return waveform, sr
 
 
 # Takes in an audiofile performs a stft and returns the tensor output
